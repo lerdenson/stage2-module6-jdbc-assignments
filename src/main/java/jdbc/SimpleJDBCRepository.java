@@ -106,15 +106,14 @@ public class SimpleJDBCRepository {
             ps.setString(2, user.getLastName());
             ps.setInt(3, user.getAge());
             ps.setLong(4, user.getId());
-            return user;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
+        return findUserById(user.getId());
     }
 
-    private void deleteUser(Long userId) {
+    public void deleteUser(Long userId) {
         try {
             connection = CustomDataSource.getInstance().getConnection();
             ps = connection.prepareStatement(deleteUser);

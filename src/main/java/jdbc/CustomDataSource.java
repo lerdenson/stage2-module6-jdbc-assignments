@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -64,28 +65,28 @@ public class CustomDataSource implements DataSource {
 
 
     @Override
-    public PrintWriter getLogWriter() {
-        return null;
+    public PrintWriter getLogWriter() throws SQLException{
+        throw new SQLException();
     }
 
     @Override
-    public void setLogWriter(PrintWriter out) {
-
+    public void setLogWriter(PrintWriter out) throws SQLException {
+        throw new SQLException();
     }
 
     @Override
-    public int getLoginTimeout() {
-        return 0;
+    public int getLoginTimeout() throws SQLException {
+        throw new SQLException();
     }
 
     @Override
-    public void setLoginTimeout(int seconds) {
-
+    public void setLoginTimeout(int seconds) throws SQLException {
+        throw new SQLException();
     }
 
     @Override
-    public Logger getParentLogger() {
-        return null;
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     @Override
@@ -102,12 +103,12 @@ public class CustomDataSource implements DataSource {
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) {
-        return null;
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw new SQLException();
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) {
-        return false;
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        throw new SQLException();
     }
 }
