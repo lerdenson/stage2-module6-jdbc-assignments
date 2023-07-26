@@ -32,40 +32,45 @@ public class CustomDataSource implements DataSource {
 
     public static CustomDataSource getInstance() {
         if (instance == null) {
-            Properties appProps = new Properties();
-            try {
-                appProps.load(new FileInputStream("src/main/resources/app.properties"));
-            } catch (IOException e) {
-                e.printStackTrace();
+            synchronized (CustomDataSource.class) {
+                if (instance == null) {
+                    Properties appProps = new Properties();
+                    try {
+                        appProps.load(new FileInputStream("src/main/resources/app.properties"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    instance = new CustomDataSource(
+                            appProps.getProperty("postgres.driver"),
+                            appProps.getProperty("postgres.url"),
+                            appProps.getProperty("postgres.password"),
+                            appProps.getProperty("postgres.name")
+                    );
+                    try {
+                        Class.forName(appProps.getProperty("postgres.driver"));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            instance = new CustomDataSource(
-                    appProps.getProperty("postgres.driver"),
-                    appProps.getProperty("postgres.url"),
-                    appProps.getProperty("postgres.password"),
-                    appProps.getProperty("postgres.name")
-            );
+
+
         }
 
         return instance;
     }
 
     @Override
-    public Connection getConnection(String username, String password) {
+    public Connection getConnection(String username, String password) throws SQLException {
         if (connection == null) {
-
-            try {
-                Class.forName(driver);
-                connection = new CustomConnector().getConnection(url, username, password);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            connection = new CustomConnector().getConnection(url, username, password);
         }
         return connection;
     }
 
 
     @Override
-    public PrintWriter getLogWriter() throws SQLException{
+    public PrintWriter getLogWriter() throws SQLException {
         throw new SQLException();
     }
 
@@ -92,12 +97,7 @@ public class CustomDataSource implements DataSource {
     @Override
     public Connection getConnection() throws SQLException {
         if (connection == null) {
-            try {
-                Class.forName(driver);
-                connection = new CustomConnector().getConnection(url, name, password);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            connection = new CustomConnector().getConnection(url, name, password);
         }
         return connection;
     }
