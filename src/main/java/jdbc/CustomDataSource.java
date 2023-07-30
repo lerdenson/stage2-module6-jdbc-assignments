@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.sql.DataSource;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -35,7 +34,7 @@ public class CustomDataSource implements DataSource {
                 if (instance == null) {
                     Properties appProps = new Properties();
                     try {
-                        appProps.load(new FileInputStream("src/main/resources/app.properties"));
+                        appProps.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -89,7 +88,6 @@ public class CustomDataSource implements DataSource {
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
     }
-
 
 
     @Override
