@@ -21,7 +21,6 @@ public class CustomDataSource implements DataSource {
     private final String url;
     private final String name;
     private final String password;
-    private Connection connection = null;
 
     private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
@@ -46,11 +45,6 @@ public class CustomDataSource implements DataSource {
                             appProps.getProperty("postgres.password"),
                             appProps.getProperty("postgres.name")
                     );
-                    try {
-                        Class.forName(appProps.getProperty("postgres.driver"));
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
 
@@ -61,11 +55,13 @@ public class CustomDataSource implements DataSource {
     }
 
     @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-        if (connection == null) {
-            connection = new CustomConnector().getConnection(url, username, password);
-        }
-        return connection;
+    public Connection getConnection(String username, String password) {
+        return new CustomConnector().getConnection(url, username, password);
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return new CustomConnector().getConnection(url, name, password);
     }
 
 
@@ -94,13 +90,7 @@ public class CustomDataSource implements DataSource {
         throw new SQLFeatureNotSupportedException();
     }
 
-    @Override
-    public Connection getConnection() throws SQLException {
-        if (connection == null) {
-            connection = new CustomConnector().getConnection(url, name, password);
-        }
-        return connection;
-    }
+
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
